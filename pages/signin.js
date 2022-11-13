@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import FormikControl from '../components/Formik/FormikControl';
+import { signIn } from 'next-auth/react';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
+import { useRouter } from 'next/router';
 
 const Signin = () => {
+    const [showPassword, setShowPassword] = useState(false);
+    const router = useRouter();
+
     const initialValues = {
         email: '',
         password: '',
@@ -14,8 +20,25 @@ const Signin = () => {
         password: Yup.string().required(),
     });
 
-    const handleSubmit = (values) => {
-        console.log(values);
+    const handleSubmit = async (values) => {
+        const { email, password } = values;
+
+        const status = await signIn('credentials', {
+            redirect: false,
+            email,
+            password,
+            callbackUrl: '/',
+        });
+
+        if (status.error) {
+            console.log(status.error);
+        }
+
+        if (status.ok) {
+            router.push('/');
+        } else {
+            console.log(status.error);
+        }
     };
     return (
         <div className="hero min-h-[88vh] bg-base-200 container mx-auto my-2">
@@ -55,12 +78,39 @@ const Signin = () => {
                                             Password
                                         </span>
                                     </label>
-                                    <FormikControl
-                                        type="password"
-                                        control="input"
-                                        name="password"
-                                        label="password"
-                                    />
+                                    <label className="input-group">
+                                        <FormikControl
+                                            type={
+                                                showPassword
+                                                    ? 'text'
+                                                    : 'password'
+                                            }
+                                            control="input"
+                                            name="password"
+                                            label="password"
+                                        />
+                                        <span>
+                                            <div
+                                                className="tooltip"
+                                                data-tip={
+                                                    showPassword
+                                                        ? 'hide password'
+                                                        : 'show password'
+                                                }
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    className="toggle ease-in duration-300"
+                                                    checked={showPassword}
+                                                    onClick={() =>
+                                                        setShowPassword(
+                                                            !showPassword
+                                                        )
+                                                    }
+                                                />
+                                            </div>
+                                        </span>
+                                    </label>
                                     <label className="label">
                                         <a
                                             href="#"
