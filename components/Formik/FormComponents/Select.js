@@ -1,14 +1,14 @@
-import { Field, ErrorMessage } from "formik";
-import React from "react";
+import { Field, ErrorMessage } from 'formik';
+import React from 'react';
 // import TextError from "../ErrorComponent";
-import { Select, Option } from "@material-tailwind/react";
+// import { Select, Option } from "@material-tailwind/react";
 
 const MySelect = (propes) => {
-  const { label, name, options, ...rest } = propes;
+    const { label, name, options, ...rest } = propes;
 
-  return (
-    <>
-      <Field as={Select} label={label} name={name} id={name} {...rest}>
+    return (
+        <>
+            {/* <Field as={Select} label={label} name={name} id={name} {...rest}>
         <Option>
           {options.map((option) => {
             return (
@@ -18,10 +18,10 @@ const MySelect = (propes) => {
             );
           })}
         </Option>
-      </Field>
-      {/* <ErrorMessage name={name} component={TextError} /> */}
-    </>
-  );
+      </Field> */}
+            {/* <ErrorMessage name={name} component={TextError} /> */}
+        </>
+    );
 };
 
 export default MySelect;
