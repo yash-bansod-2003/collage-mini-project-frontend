@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import {
     AcademicCapIcon,
     UserGroupIcon,
@@ -17,19 +18,73 @@ const Home = () => {
                 </ul>
             </div>
             <div className="w-full flex justify-between">
-                <div className="card card-side bg-base-100 shadow-xl">
+                <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="card card-side bg-base-100 shadow-xl"
+                >
                     <figure>
-                        <UserIcon className="w-20 h-20" />
+                        <AcademicCapIcon className="w-20 h-20" />
                     </figure>
                     <div className="card-body">
-                        <h2 className="card-title text-2xl">Users</h2>
+                        <h2 className="card-title text-2xl">Students</h2>
                         <div className="card-actions justify-end">
                             <h2 className="text-primary text-6xl font-semibold">
                                 200+
                             </h2>
                         </div>
                     </div>
-                </div>
+                </motion.div>
+
+                <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="card card-side bg-base-100 shadow-xl"
+                >
+                    <figure>
+                        <UserGroupIcon className="w-20 h-20" />
+                    </figure>
+                    <div className="card-body">
+                        <h2 className="card-title text-2xl">Faculities</h2>
+                        <div className="card-actions justify-end">
+                            <h2 className="text-primary text-6xl font-semibold">
+                                100+
+                            </h2>
+                        </div>
+                    </div>
+                </motion.div>
+
+                <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="card card-side bg-base-100 shadow-xl"
+                >
+                    <figure>
+                        <BookOpenIcon className="w-20 h-20" />
+                    </figure>
+                    <div className="card-body">
+                        <h2 className="card-title text-2xl">Courses</h2>
+                        <div className="card-actions justify-end">
+                            <h2 className="text-primary text-6xl font-semibold">
+                                10
+                            </h2>
+                        </div>
+                    </div>
+                </motion.div>
+
+                <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="card card-side bg-base-100 shadow-xl"
+                >
+                    <figure>
+                        <AcademicCapIcon className="w-20 h-20" />
+                    </figure>
+                    <div className="card-body">
+                        <h2 className="card-title text-2xl">Students</h2>
+                        <div className="card-actions justify-end">
+                            <h2 className="text-primary text-6xl font-semibold">
+                                200+
+                            </h2>
+                        </div>
+                    </div>
+                </motion.div>
             </div>
         </div>
     );

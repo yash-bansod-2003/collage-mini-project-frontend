@@ -5,12 +5,17 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import {
     UserCircleIcon,
     ChartBarIcon,
+    AcademicCapIcon,
     AdjustmentsHorizontalIcon,
     TableCellsIcon,
+    UserGroupIcon,
     HomeIcon,
+    PencilSquareIcon,
+    BookOpenIcon,
 } from '@heroicons/react/24/solid';
 import TabItem from '../../components/Dashboard/TabItem';
 import Home from '../../components/Dashboard/Home';
+import Student from '../../components/Dashboard/Student';
 
 const Dashboard = () => {
     return (
@@ -19,8 +24,17 @@ const Dashboard = () => {
                 <TabItem title="Home" icon={HomeIcon}>
                     <Home />
                 </TabItem>
-                <TabItem title="Profile" icon={UserCircleIcon}>
-                    profile
+                <TabItem title="Courses" icon={BookOpenIcon}>
+                    Courses
+                </TabItem>
+                <TabItem title="Students" icon={AcademicCapIcon}>
+                    <Student />
+                </TabItem>
+                <TabItem title="Faculities" icon={UserGroupIcon}>
+                    Faculities
+                </TabItem>
+                <TabItem title="Assign Subject" icon={PencilSquareIcon}>
+                    Assign Subject
                 </TabItem>
             </Tabs.Group>
         </div>

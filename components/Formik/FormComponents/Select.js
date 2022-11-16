@@ -8,18 +8,24 @@ const MySelect = (propes) => {
 
     return (
         <>
-            {/* <Field as={Select} label={label} name={name} id={name} {...rest}>
-        <Option>
-          {options.map((option) => {
-            return (
-              <option key={option.value} value={option.value}>
-                {option.key}
-              </option>
-            );
-          })}
-        </Option>
-      </Field> */}
-            {/* <ErrorMessage name={name} component={TextError} /> */}
+            <Field
+                as="select"
+                className="select select-bordered w-full max-w-xs"
+                name={name}
+                id={name}
+                {...rest}
+            >
+                <option disabled selected>
+                    {label}
+                </option>
+                {options.map((option) => {
+                    return (
+                        <option key={option.value} value={option.value}>
+                            {option.key}
+                        </option>
+                    );
+                })}
+            </Field>
         </>
     );
 };
