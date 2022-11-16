@@ -1,8 +1,15 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useSession, signOut } from 'next-auth/react';
+import { useEffect } from 'react';
 
 const Navbar = () => {
     const router = useRouter();
+    const { data: session, status } = useSession();
+
+    useEffect(() => {
+        console.log(session);
+    }, [session]);
 
     return (
         <div className="navbar bg-base-100 container mx-auto">
@@ -38,11 +45,24 @@ const Navbar = () => {
                                 <a>About</a>
                             </Link>
                         </li>
-                        <li>
-                            <Link href="/dashboard" legacyBehavior>
-                                <a>Dashboard</a>
-                            </Link>
-                        </li>
+                        {session && status === 'authenticated' ? (
+                            <li>
+                                <Link href="/profile" legacyBehavior>
+                                    <a>Profile</a>
+                                </Link>
+                            </li>
+                        ) : null}
+
+                        {session &&
+                        status === 'authenticated' &&
+                        (session?.user.role === 'admin' ||
+                            session?.user.role === 'teacher') ? (
+                            <li>
+                                <Link href="/dashboard" legacyBehavior>
+                                    <a>Dashboard</a>
+                                </Link>
+                            </li>
+                        ) : null}
                     </ul>
                 </div>
                 <a className="btn btn-ghost normal-case text-xl">Nothing</a>
@@ -59,17 +79,40 @@ const Navbar = () => {
                             <a>About</a>
                         </Link>
                     </li>
-                    <li>
-                        <Link href="/dashboard" legacyBehavior>
-                            <a>Dashboard</a>
-                        </Link>
-                    </li>
+
+                    {session && status === 'authenticated' ? (
+                        <li>
+                            <Link href="/profile" legacyBehavior>
+                                <a>Profile</a>
+                            </Link>
+                        </li>
+                    ) : null}
+
+                    {session &&
+                    status === 'authenticated' &&
+                    (session?.user.role === 'admin' ||
+                        session?.user.role === 'teacher') ? (
+                        <li>
+                            <Link href="/dashboard" legacyBehavior>
+                                <a>Dashboard</a>
+                            </Link>
+                        </li>
+                    ) : null}
                 </ul>
             </div>
             <div className="navbar-end">
-                <Link className="btn px-8" href="/signin">
-                    Login
-                </Link>
+                {session && status === 'authenticated' ? (
+                    <button
+                        className="btn px-8 btn-outline"
+                        onClick={() => signOut()}
+                    >
+                        Logout
+                    </button>
+                ) : (
+                    <Link className="btn px-8" href="/signin">
+                        Login
+                    </Link>
+                )}
             </div>
         </div>
     );

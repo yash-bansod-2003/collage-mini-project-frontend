@@ -1,4 +1,5 @@
 import NextAuth from 'next-auth';
+import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import axios from 'axios';
 
@@ -40,6 +41,7 @@ export const authOptions = {
         async session({ session, user, token }) {
             session.user.id = token.id;
             session.user.role = token.role;
+            session.user.image = null;
             return session;
         },
     },
