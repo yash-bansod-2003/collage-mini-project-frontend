@@ -8,6 +8,7 @@ import { jwtService } from '../services';
 const Profile = ({ user, session }) => {
     return (
         <div className="container mx-auto my-2 flex">
+            <h1>sample change</h1>
             <div className="w-1/2 flex justify-center">
                 <div className="mt-8">
                     <div className="card w-96 bg-base-100 shadow-xl">
