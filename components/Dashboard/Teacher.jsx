@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import FormikControl from '../Formik/FormikControl';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
+import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { jwtService } from '../../services';
 import useSWR from 'swr';
@@ -38,7 +39,7 @@ const branchOptions = [
     },
     {
         value: 'extc',
-        key: 'Electronics And Telicomunication',
+        key: 'Electronics And Telecommunication',
     },
 ];
 
@@ -52,11 +53,12 @@ const initialValues = {
     contact: '',
     gender: '',
     branch: '',
+    qulification: '',
+    experience: '',
 };
 
-const Student = () => {
+const Teacher = () => {
     const { data: session } = useSession();
-
     const fetcher = async () => {
         const token = jwtService.sign({
             _id: session.user.id,
@@ -64,24 +66,34 @@ const Student = () => {
         });
 
         const response = await axios
-            .post('http://127.0.0.1:5000/api/student', null, {
+            .post('http://127.0.0.1:5000/api/teacher', null, {
                 headers: { authorization: `Bearer ${token}` },
             })
             .catch((error) => error.response);
         return response.data;
     };
 
-    const { data: rows, error } = useSWR('students', fetcher);
+    const { data: rows, error } = useSWR('teachers', fetcher);
 
     const validationSchema = Yup.object({
         email: Yup.string().email().required().lowercase(),
         contact: Yup.string().required().lowercase(),
         gender: Yup.string().required().lowercase(),
         branch: Yup.string().required().lowercase(),
+        qulification: Yup.string().required().lowercase(),
+        experience: Yup.string().required().lowercase(),
     });
 
     const handleSubmit = async (values) => {
-        const { name, email, contact, gender, branch } = values;
+        const {
+            name,
+            email,
+            contact,
+            gender,
+            branch,
+            qulification,
+            experience,
+        } = values;
         const password = 'stud@123';
         const repeat_password = 'stud@123';
 
@@ -92,8 +104,10 @@ const Student = () => {
                 contact,
                 gender,
                 branch,
+                role: 'teacher',
+                qulification,
+                experience,
                 password,
-                role: 'student',
                 repeat_password,
             })
             .catch((err) => err.response);
@@ -108,13 +122,12 @@ const Student = () => {
                     <li>
                         <a>Dashboard</a>
                     </li>
-                    <li>Students</li>
+                    <li>Faculties</li>
                 </ul>
             </div>
 
             <div className="overflow-x-auto card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100 my-6">
                 <table className="table w-full">
-                    {/* <!-- head --> */}
                     <thead>
                         <tr key="header">
                             <th></th>
@@ -242,15 +255,45 @@ const Student = () => {
                                         options={branchOptions}
                                     />
                                 </div>
+
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text">
+                                            Qulification
+                                        </span>
+                                    </label>
+                                    <FormikControl
+                                        type="text"
+                                        control="input"
+                                        name="qulification"
+                                        label="Qulification"
+                                    />
+                                </div>
+
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text">
+                                            Experience
+                                        </span>
+                                    </label>
+                                    <FormikControl
+                                        type="text"
+                                        control="input"
+                                        name="experience"
+                                        label="Experience"
+                                    />
+                                </div>
                             </div>
                             <div className="form-control mt-6">
-                                <button
+                                <motion.button
                                     className="btn btn-primary w-fit gap-2"
                                     type="submit"
+                                    initial={{ scale: 1 }}
+                                    animate={{ scale: 1.1 }}
                                 >
-                                    Add New Student
+                                    Add New Faculty
                                     <PlusIcon className="h-6 w-6" />
-                                </button>
+                                </motion.button>
                             </div>
                         </Form>
                     </Formik>
@@ -260,4 +303,4 @@ const Student = () => {
     );
 };
 
-export default Student;
+export default Teacher;

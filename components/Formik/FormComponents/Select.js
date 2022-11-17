@@ -15,9 +15,7 @@ const MySelect = (propes) => {
                 id={name}
                 {...rest}
             >
-                <option disabled selected>
-                    {label}
-                </option>
+                <option defaultValue={null}>{label}</option>
                 {options.map((option) => {
                     return (
                         <option key={option.value} value={option.value}>

@@ -61,6 +61,77 @@ export default function Home() {
                     />
                 </Carousel>
             </div>
+
+            <h1 className="container mx-auto text-center my-5  text-4xl capitalize">
+                Our Recruiters
+            </h1>
+
+            <div className="py-12 container mx-auto flex flex-col gap-10 md:gap-0 md:flex-row justify-evenly items-center">
+                <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="card w-fit h-fit bg-base-100 shadow-xl"
+                >
+                    <figure className="p-8">
+                        <motion.img
+                            src="facebook.svg"
+                            alt="Shoes"
+                            className="rounded-xl"
+                        />
+                    </figure>
+                </motion.div>
+
+                <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="card w-fit h-fit bg-base-100 shadow-xl"
+                >
+                    <figure className="p-8">
+                        <motion.img
+                            src="google.svg"
+                            alt="Shoes"
+                            className="rounded-xl"
+                        />
+                    </figure>
+                </motion.div>
+
+                <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="card w-fit h-fit bg-base-100 shadow-xl"
+                >
+                    <figure className="p-8">
+                        <motion.img
+                            src="microsoft.svg"
+                            alt="Shoes"
+                            className="rounded-xl"
+                        />
+                    </figure>
+                </motion.div>
+
+                <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="card w-fit h-fit bg-base-100 shadow-xl"
+                >
+                    <figure className="p-8">
+                        <motion.img
+                            src="amazon.svg"
+                            alt="Shoes"
+                            className="rounded-xl"
+                        />
+                    </figure>
+                </motion.div>
+
+                <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="card w-fit h-fit bg-base-100 shadow-xl"
+                >
+                    <figure className="p-8">
+                        <motion.img
+                            src="tesla.svg"
+                            alt="Shoes"
+                            className="rounded-xl"
+                        />
+                    </figure>
+                </motion.div>
+            </div>
         </div>
     );
 }

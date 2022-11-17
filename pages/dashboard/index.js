@@ -16,6 +16,8 @@ import {
 import TabItem from '../../components/Dashboard/TabItem';
 import Home from '../../components/Dashboard/Home';
 import Student from '../../components/Dashboard/Student';
+import Teacher from '../../components/Dashboard/Teacher';
+import Course from '../../components/Dashboard/Course';
 
 const Dashboard = () => {
     return (
@@ -25,13 +27,13 @@ const Dashboard = () => {
                     <Home />
                 </TabItem>
                 <TabItem title="Courses" icon={BookOpenIcon}>
-                    Courses
+                    <Course />
                 </TabItem>
                 <TabItem title="Students" icon={AcademicCapIcon}>
                     <Student />
                 </TabItem>
-                <TabItem title="Faculities" icon={UserGroupIcon}>
-                    Faculities
+                <TabItem title="Faculties" icon={UserGroupIcon}>
+                    <Teacher />
                 </TabItem>
                 <TabItem title="Assign Subject" icon={PencilSquareIcon}>
                     Assign Subject

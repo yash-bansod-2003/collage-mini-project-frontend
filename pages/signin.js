@@ -80,7 +80,11 @@ const Signin = () => {
                                     </label>
                                     <label className="input-group">
                                         <FormikControl
-                                            type="text"
+                                            type={
+                                                showPassword
+                                                    ? 'text'
+                                                    : 'password'
+                                            }
                                             control="input"
                                             name="password"
                                             label="password"
