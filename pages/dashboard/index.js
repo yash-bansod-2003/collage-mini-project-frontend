@@ -18,6 +18,7 @@ import Home from '../../components/Dashboard/Home';
 import Student from '../../components/Dashboard/Student';
 import Teacher from '../../components/Dashboard/Teacher';
 import Course from '../../components/Dashboard/Course';
+import Degree from '../../components/Dashboard/Degree';
 
 const Dashboard = () => {
     return (
@@ -25,6 +26,9 @@ const Dashboard = () => {
             <Tabs.Group aria-label="Tabs with icons" style="underline">
                 <TabItem title="Home" icon={HomeIcon}>
                     <Home />
+                </TabItem>
+                <TabItem title="Degree" icon={BookOpenIcon}>
+                    <Degree />
                 </TabItem>
                 <TabItem title="Courses" icon={BookOpenIcon}>
                     <Course />
