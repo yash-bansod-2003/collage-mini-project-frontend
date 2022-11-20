@@ -102,6 +102,10 @@ const Signin = () => {
                                                     type="checkbox"
                                                     className="toggle ease-in duration-300"
                                                     checked={showPassword}
+                                                    onChange={() =>
+                                                        setShowPassword(
+                                                            !showPassword
+                                                        )}
                                                     onClick={() =>
                                                         setShowPassword(
                                                             !showPassword

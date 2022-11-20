@@ -4,42 +4,18 @@ import * as Yup from 'yup';
 import FormikControl from '../Formik/FormikControl';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
-import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { jwtService } from '../../services';
-import useSWR from 'swr';
+import nanoId from 'nano-id';
 
-const genderOptions = [
+const semesterOptions = [
     {
-        value: 'male',
-        key: 'Male',
+        value: 4,
+        key: '4',
     },
     {
-        value: 'female',
-        key: 'Female',
-    },
-    {
-        value: 'other',
-        key: 'Other',
-    },
-];
-
-const branchOptions = [
-    {
-        value: 'cse',
-        key: 'Computer Scienece And Engineering',
-    },
-    {
-        value: 'it',
-        key: 'Information And Technology',
-    },
-    {
-        value: 'civil',
-        key: 'Civil',
-    },
-    {
-        value: 'extc',
-        key: 'Electronics And Telecommunication',
+        value: 8,
+        key: '8',
     },
 ];
 
@@ -47,110 +23,84 @@ const initialValues = {
     name: {
         first: '',
         middle: '',
-        last: '',
+        last: ''
     },
-    email: '',
-    contact: '',
-    gender: '',
-    branch: '',
-    qulification: '',
-    experience: '',
+    id: nanoId(6),
+    email : '',
+    dob : '',
+    gender : ''
 };
 
+const validationSchema = Yup.object({
+    name: Yup.string().required().max(50),
+    code: Yup.string().required().max(20),
+    semestercount: Yup.number().required(),
+});
+
 const Teacher = () => {
+    const [rows, setRows] = useState([]);
     const { data: session } = useSession();
-    const fetcher = async () => {
+
+    useEffect(() => {
+        (async () => {
+            const response = await axios
+                .get('http://127.0.0.1:5000/api/course')
+                .catch((error) => error.response);
+            response?.status === 200 ? setRows(response.data) : null;
+        })();
+    }, []);
+
+    useEffect(() => {
+    }, [rows]);
+
+    const handleSubmit = async (values) => {
+        const { code, name, semestercount } = values;
+
         const token = jwtService.sign({
             _id: session.user.id,
             role: session.user.role,
         });
 
-        const response = await axios
-            .post('http://127.0.0.1:5000/api/teacher', null, {
-                headers: { authorization: `Bearer ${token}` },
-            })
-            .catch((error) => error.response);
-        return response.data;
-    };
+        const response = await axios.post('http://127.0.0.1:5000/api/course', {
+            code, name, semestercount
+        }, { headers: { authorization: `Bearer ${token}` } }).catch(error => error.response);
 
-    const { data: rows, error } = useSWR('teachers', fetcher);
-
-    const validationSchema = Yup.object({
-        email: Yup.string().email().required().lowercase(),
-        contact: Yup.string().required().lowercase(),
-        gender: Yup.string().required().lowercase(),
-        branch: Yup.string().required().lowercase(),
-        qulification: Yup.string().required().lowercase(),
-        experience: Yup.string().required().lowercase(),
-    });
-
-    const handleSubmit = async (values) => {
-        const {
-            name,
-            email,
-            contact,
-            gender,
-            branch,
-            qulification,
-            experience,
-        } = values;
-        const password = 'stud@123';
-        const repeat_password = 'stud@123';
-
-        const response = await axios
-            .post('http://127.0.0.1:5000/api/register', {
-                name,
-                email,
-                contact,
-                gender,
-                branch,
-                role: 'teacher',
-                qulification,
-                experience,
-                password,
-                repeat_password,
-            })
-            .catch((err) => err.response);
-
-        console.log(response);
+        response.status === 200 ? setRows([...rows, { code, name, semestercount }]) : null;
     };
 
     return (
         <>
-            <div className="text-xl breadcrumbs border-b mb-3">
-                <ul>
-                    <li>
-                        <a>Dashboard</a>
-                    </li>
-                    <li>Faculties</li>
-                </ul>
-            </div>
-
             <div className="overflow-x-auto card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100 my-6">
-                <table className="table w-full">
-                    <thead>
-                        <tr key="header">
-                            <th></th>
-                            <th>name</th>
-                            <th>email</th>
-                            <th>branch</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows
-                            ? rows.map((row, index) => {
-                                  return (
-                                      <tr key={row.email}>
-                                          <th>{index + 1}</th>
-                                          <td>{`${row.name.first} ${row.name.middle} ${row.name.last}`}</td>
-                                          <td>{row.email}</td>
-                                          <td>{row.branch}</td>
-                                      </tr>
-                                  );
-                              })
-                            : 'Nothing'}
-                    </tbody>
-                </table>
+                {
+                    rows.length !== 0 ?
+                        <table className="table w-full">
+                            <thead>
+                                <tr key={nanoId(5)}>
+                                    <th>sr no</th>
+                                    <th>code</th>
+                                    <th>name</th>
+                                    <th>semester count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    rows.map((row, index) => {
+                                        return (
+                                            <tr key={row.code}>
+                                                <th>{index + 1}</th>
+                                                <td>{row.code}</td>
+                                                <td>{row.name}</td>
+                                                <td>{row.semestercount}</td>
+                                            </tr>
+                                        );
+                                    })
+                                }
+                            </tbody>
+                        </table> : <div className="alert shadow-lg">
+                            <h2 className='text-2xl text-secondary'>No Courses To Display</h2>
+                        </div>
+                }
+
             </div>
 
             <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
@@ -161,139 +111,57 @@ const Teacher = () => {
                         onSubmit={handleSubmit}
                     >
                         <Form>
-                            <div className="grid gap-y-6 grid-rows-3 grid-cols-3">
+                            <div className="grid gap-y-6 grid-rows-1 grid-cols-3">
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">
-                                            First Name
+                                            Course Code
                                         </span>
                                     </label>
                                     <FormikControl
                                         type="text"
                                         control="input"
-                                        name="name.first"
-                                        label="Yash"
-                                    />
-                                </div>
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">
-                                            Middle Name
-                                        </span>
-                                    </label>
-                                    <FormikControl
-                                        type="text"
-                                        control="input"
-                                        name="name.middle"
-                                        label="Gajanan"
-                                    />
-                                </div>
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">
-                                            Last Name
-                                        </span>
-                                    </label>
-                                    <FormikControl
-                                        type="text"
-                                        control="input"
-                                        name="name.last"
-                                        label="Bansod"
+                                        name="code"
+                                        label=""
                                     />
                                 </div>
 
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">
-                                            Email
-                                        </span>
-                                    </label>
-                                    <FormikControl
-                                        type="email"
-                                        control="input"
-                                        name="email"
-                                        label="yashbansod2020@gmail.com"
-                                    />
-                                </div>
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">
-                                            Contact
+                                            Course Name
                                         </span>
                                     </label>
                                     <FormikControl
                                         type="text"
                                         control="input"
-                                        name="contact"
-                                        label="9356650334"
+                                        name="name"
+                                        label="computer science and engineering"
                                     />
                                 </div>
+
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">
-                                            Gender
+                                            Semester Count
                                         </span>
                                     </label>
                                     <FormikControl
-                                        label="Select Gender"
-                                        name="gender"
+                                        label="Semester Count"
+                                        name="semestercount"
                                         control="select"
-                                        options={genderOptions}
-                                    />
-                                </div>
-
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">
-                                            Branch
-                                        </span>
-                                    </label>
-                                    <FormikControl
-                                        label="Select Branch"
-                                        name="branch"
-                                        control="select"
-                                        options={branchOptions}
-                                    />
-                                </div>
-
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">
-                                            Qulification
-                                        </span>
-                                    </label>
-                                    <FormikControl
-                                        type="text"
-                                        control="input"
-                                        name="qulification"
-                                        label="Qulification"
-                                    />
-                                </div>
-
-                                <div className="form-control">
-                                    <label className="label">
-                                        <span className="label-text">
-                                            Experience
-                                        </span>
-                                    </label>
-                                    <FormikControl
-                                        type="text"
-                                        control="input"
-                                        name="experience"
-                                        label="Experience"
+                                        options={semesterOptions}
                                     />
                                 </div>
                             </div>
                             <div className="form-control mt-6">
-                                <motion.button
+                                <button
                                     className="btn btn-primary w-fit gap-2"
                                     type="submit"
-                                    initial={{ scale: 1 }}
-                                    animate={{ scale: 1.1 }}
                                 >
-                                    Add New Faculty
+                                    Add New Course
                                     <PlusIcon className="h-6 w-6" />
-                                </motion.button>
+                                </button>
                             </div>
                         </Form>
                     </Formik>

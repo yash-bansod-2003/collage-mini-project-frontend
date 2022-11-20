@@ -6,7 +6,7 @@ import { PlusIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { jwtService } from '../../services';
-import useSWR from 'swr';
+import nanoId from 'nano-id';
 
 const genderOptions = [
     {
@@ -54,31 +54,37 @@ const initialValues = {
     branch: '',
 };
 
+const validationSchema = Yup.object({
+    email: Yup.string().email().required().lowercase(),
+    contact: Yup.string().required().lowercase(),
+    gender: Yup.string().required().lowercase(),
+    branch: Yup.string().required().lowercase(),
+});
+
+
 const Student = () => {
     const { data: session } = useSession();
+    const [rows, setRows] = useState([]);
 
-    const fetcher = async () => {
-        const token = jwtService.sign({
-            _id: session.user.id,
-            role: session.user.role,
-        });
+    useEffect(() => {
+        (async () => {
+            const token = jwtService.sign({
+                _id: session.user.id,
+                role: session.user.role,
+            });
 
-        const response = await axios
-            .post('http://127.0.0.1:5000/api/student', null, {
-                headers: { authorization: `Bearer ${token}` },
-            })
-            .catch((error) => error.response);
-        return response.data;
-    };
+            const response = await axios
+                .post('http://127.0.0.1:5000/api/student', null, {
+                    headers: { 'authorization': `Bearer ${token}` },
+                })
+                .catch((error) => error.response);
 
-    const { data: rows, error } = useSWR('students', fetcher);
+            response.status === 200 ? setRows(response.data) : null;
+        })();
+    }, []);
 
-    const validationSchema = Yup.object({
-        email: Yup.string().email().required().lowercase(),
-        contact: Yup.string().required().lowercase(),
-        gender: Yup.string().required().lowercase(),
-        branch: Yup.string().required().lowercase(),
-    });
+    useEffect(() => {
+    }, [rows]);
 
     const handleSubmit = async (values) => {
         const { name, email, contact, gender, branch } = values;
@@ -98,48 +104,21 @@ const Student = () => {
             })
             .catch((err) => err.response);
 
-        console.log(response);
+        response.status === 200 ?
+            setRows([...rows, {
+                name,
+                email,
+                contact,
+                gender,
+                branch,
+                password,
+                role: 'student',
+                repeat_password,
+            }]) : null;
     };
 
     return (
         <>
-            <div className="text-xl breadcrumbs border-b mb-3">
-                <ul>
-                    <li>
-                        <a>Dashboard</a>
-                    </li>
-                    <li>Students</li>
-                </ul>
-            </div>
-
-            <div className="overflow-x-auto card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100 my-6">
-                <table className="table w-full">
-                    {/* <!-- head --> */}
-                    <thead>
-                        <tr key="header">
-                            <th></th>
-                            <th>name</th>
-                            <th>email</th>
-                            <th>branch</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows
-                            ? rows.map((row, index) => {
-                                  return (
-                                      <tr key={row.email}>
-                                          <th>{index + 1}</th>
-                                          <td>{`${row.name.first} ${row.name.middle} ${row.name.last}`}</td>
-                                          <td>{row.email}</td>
-                                          <td>{row.branch}</td>
-                                      </tr>
-                                  );
-                              })
-                            : 'Nothing'}
-                    </tbody>
-                </table>
-            </div>
-
             <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
                 <div className="card-body">
                     <Formik
@@ -255,6 +234,34 @@ const Student = () => {
                         </Form>
                     </Formik>
                 </div>
+            </div>
+
+            <div className="overflow-x-auto card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100 my-6">
+                {rows.length !== 0 ?
+                    <table className="table w-full">
+                        <thead>
+                            <tr key={nanoId(4)}>
+                                <th>sr no</th>
+                                <th>name</th>
+                                <th>email</th>
+                                <th>branch</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows
+                                ? rows.map((row, index) => {
+                                    return (
+                                        <tr key={row.email}>
+                                            <th>{index + 1}</th>
+                                            <td>{`${row.name.first} ${row.name.middle} ${row.name.last}`}</td>
+                                            <td>{row.email}</td>
+                                            <td>{row.branch}</td>
+                                        </tr>
+                                    );
+                                })
+                                : 'Nothing'}
+                        </tbody>
+                    </table> : null}
             </div>
         </>
     );

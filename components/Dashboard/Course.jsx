@@ -26,13 +26,13 @@ const initialValues = {
 };
 
 const validationSchema = Yup.object({
-    name: Yup.string().required().max(30),
+    name: Yup.string().required().max(50),
     code: Yup.string().required().max(20),
     semestercount: Yup.number().required(),
 });
 
 const Course = () => {
-    const [rows, setRows] = useState(null);
+    const [rows, setRows] = useState([]);
     const { data: session } = useSession();
 
     useEffect(() => {
@@ -42,6 +42,9 @@ const Course = () => {
                 .catch((error) => error.response);
             response?.status === 200 ? setRows(response.data) : null;
         })();
+    }, []);
+
+    useEffect(() => {
     }, [rows]);
 
     const handleSubmit = async (values) => {
@@ -52,42 +55,46 @@ const Course = () => {
             role: session.user.role,
         });
 
-        const response = await axios
-            .post(
-                'http://127.0.0.1:5000/api/course',
-                { code, name, semestercount, },
-                { headers: { authorization: `Bearer ${token}`, }, }
-            ).catch((err) => err.response);
+        const response = await axios.post('http://127.0.0.1:5000/api/course', {
+            code, name, semestercount
+        }, { headers: { authorization: `Bearer ${token}` } }).catch(error => error.response);
+
+        response.status === 200 ? setRows([...rows, { code, name, semestercount }]) : null;
     };
 
     return (
         <>
             <div className="overflow-x-auto card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100 my-6">
-                <table className="table w-full">
-                    {/* <!-- head --> */}
-                    <thead>
-                        <tr key={'header'}>
-                            <th></th>
-                            <th>code</th>
-                            <th>name</th>
-                            <th>semester count</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows
-                            ? rows.map((row, index) => {
-                                return (
-                                    <tr key={row.code}>
-                                        <th>{index + 1}</th>
-                                        <td>{row.code}</td>
-                                        <td>{row.name}</td>
-                                        <td>{row.semestercount}</td>
-                                    </tr>
-                                );
-                            })
-                            : 'No Data To Display'}
-                    </tbody>
-                </table>
+                {
+                    rows.length !== 0 ?
+                        <table className="table w-full">
+                            <thead>
+                                <tr key={nanoId(5)}>
+                                    <th>sr no</th>
+                                    <th>code</th>
+                                    <th>name</th>
+                                    <th>semester count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    rows.map((row, index) => {
+                                        return (
+                                            <tr key={row.code}>
+                                                <th>{index + 1}</th>
+                                                <td>{row.code}</td>
+                                                <td>{row.name}</td>
+                                                <td>{row.semestercount}</td>
+                                            </tr>
+                                        );
+                                    })
+                                }
+                            </tbody>
+                        </table> : <div className="alert shadow-lg">
+                            <h2 className='text-2xl text-secondary'>No Courses To Display</h2>
+                        </div>
+                }
+
             </div>
 
             <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
@@ -123,7 +130,7 @@ const Course = () => {
                                         type="text"
                                         control="input"
                                         name="name"
-                                        label="civil engineering"
+                                        label="computer science and engineering"
                                     />
                                 </div>
 
