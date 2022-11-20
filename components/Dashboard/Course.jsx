@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import FormikControl from '../Formik/FormikControl';
@@ -7,7 +7,6 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { jwtService } from '../../services';
 import nanoId from 'nano-id';
-import useSWR from 'swr';
 
 const semesterOptions = [
     {
@@ -32,22 +31,22 @@ const validationSchema = Yup.object({
     semestercount: Yup.number().required(),
 });
 
-const fetcher = async () => {
-    const response = await axios
-        .get('http://127.0.0.1:5000/api/course')
-        .catch((error) => error.response);
-    return response.data;
-};
-
 const Course = () => {
+    const [rows, setRows] = useState(null);
     const { data: session } = useSession();
 
-    const { data: rows, error } = useSWR('courses', fetcher);
+    useEffect(() => {
+        (async () => {
+            const response = await axios
+                .get('http://127.0.0.1:5000/api/course')
+                .catch((error) => error.response);
+            response?.status === 200 ? setRows(response.data) : null;
+        })();
+    }, [rows]);
 
     const handleSubmit = async (values) => {
         const { code, name, semestercount } = values;
 
-        //GENERATE A TOKEN FOR SEND TO BACKEND FOR AUTH
         const token = jwtService.sign({
             _id: session.user.id,
             role: session.user.role,
@@ -56,31 +55,13 @@ const Course = () => {
         const response = await axios
             .post(
                 'http://127.0.0.1:5000/api/course',
-                {
-                    code,
-                    name,
-                    semestercount,
-                },
-                {
-                    headers: {
-                        authorization: `Bearer ${token}`,
-                    },
-                }
-            )
-            .catch((err) => err.response);
+                { code, name, semestercount, },
+                { headers: { authorization: `Bearer ${token}`, }, }
+            ).catch((err) => err.response);
     };
 
     return (
         <>
-            <div className="text-xl breadcrumbs border-b mb-3">
-                <ul>
-                    <li>
-                        <a>Dashboard</a>
-                    </li>
-                    <li>Students</li>
-                </ul>
-            </div>
-
             <div className="overflow-x-auto card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100 my-6">
                 <table className="table w-full">
                     {/* <!-- head --> */}
@@ -95,15 +76,15 @@ const Course = () => {
                     <tbody>
                         {rows
                             ? rows.map((row, index) => {
-                                  return (
-                                      <tr key={row.code}>
-                                          <th>{index + 1}</th>
-                                          <td>{row.code}</td>
-                                          <td>{row.name}</td>
-                                          <td>{row.semestercount}</td>
-                                      </tr>
-                                  );
-                              })
+                                return (
+                                    <tr key={row.code}>
+                                        <th>{index + 1}</th>
+                                        <td>{row.code}</td>
+                                        <td>{row.name}</td>
+                                        <td>{row.semestercount}</td>
+                                    </tr>
+                                );
+                            })
                             : 'No Data To Display'}
                     </tbody>
                 </table>

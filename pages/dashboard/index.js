@@ -29,7 +29,7 @@ const Dashboard = () => {
                 <TabItem title="Courses" icon={BookOpenIcon}>
                     <Course />
                 </TabItem>
-                <TabItem title="Students" icon={AcademicCapIcon}>
+                {/* <TabItem title="Students" icon={AcademicCapIcon}>
                     <Student />
                 </TabItem>
                 <TabItem title="Faculties" icon={UserGroupIcon}>
@@ -37,7 +37,7 @@ const Dashboard = () => {
                 </TabItem>
                 <TabItem title="Assign Subject" icon={PencilSquareIcon}>
                     Assign Subject
-                </TabItem>
+                </TabItem> */}
             </Tabs.Group>
         </div>
     );
