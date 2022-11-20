@@ -32,9 +32,9 @@ const Dashboard = () => {
                 <TabItem title="Students" icon={AcademicCapIcon}>
                     <Student />
                 </TabItem>
-                {/* <TabItem title="Faculties" icon={UserGroupIcon}>
+                <TabItem title="Faculties" icon={UserGroupIcon}>
                     <Teacher />
-                </TabItem> */}
+                </TabItem>
                 <TabItem title="Assign Subject" icon={PencilSquareIcon}>
                     Assign Subject
                 </TabItem>
