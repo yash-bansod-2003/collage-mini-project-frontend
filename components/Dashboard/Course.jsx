@@ -64,39 +64,6 @@ const Course = () => {
 
     return (
         <>
-            <div className="overflow-x-auto card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100 my-6">
-                {
-                    rows.length !== 0 ?
-                        <table className="table w-full">
-                            <thead>
-                                <tr key={nanoId(5)}>
-                                    <th>sr no</th>
-                                    <th>code</th>
-                                    <th>name</th>
-                                    <th>semester count</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    rows.map((row, index) => {
-                                        return (
-                                            <tr key={row.code}>
-                                                <th>{index + 1}</th>
-                                                <td>{row.code}</td>
-                                                <td>{row.name}</td>
-                                                <td>{row.semestercount}</td>
-                                            </tr>
-                                        );
-                                    })
-                                }
-                            </tbody>
-                        </table> : <div className="alert shadow-lg">
-                            <h2 className='text-2xl text-secondary'>No Courses To Display</h2>
-                        </div>
-                }
-
-            </div>
-
             <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
                 <div className="card-body">
                     <Formik
@@ -160,6 +127,39 @@ const Course = () => {
                         </Form>
                     </Formik>
                 </div>
+            </div>
+
+            <div className="overflow-x-auto card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100 my-6">
+                {
+                    rows.length !== 0 ?
+                        <table className="table w-full">
+                            <thead>
+                                <tr key={nanoId(5)}>
+                                    <th>sr no</th>
+                                    <th>code</th>
+                                    <th>name</th>
+                                    <th>semester count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    rows.map((row, index) => {
+                                        return (
+                                            <tr key={row.code}>
+                                                <th>{index + 1}</th>
+                                                <td>{row.code}</td>
+                                                <td>{row.name}</td>
+                                                <td>{row.semestercount}</td>
+                                            </tr>
+                                        );
+                                    })
+                                }
+                            </tbody>
+                        </table> : <div className="alert shadow-lg">
+                            <h2 className='text-2xl text-secondary'>No Courses To Display</h2>
+                        </div>
+                }
+
             </div>
         </>
     );
