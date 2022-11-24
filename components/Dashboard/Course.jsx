@@ -7,6 +7,8 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { jwtService } from '../../services';
 import nanoId from 'nano-id';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProducts } from '../../redux/courseSlice';
 
 const semesterOptions = [
     {
@@ -32,20 +34,19 @@ const validationSchema = Yup.object({
 });
 
 const Course = () => {
-    const [rows, setRows] = useState([]);
+
+    const dispatch = useDispatch();
+    const rows = useSelector(state => state.course.data);
+    // const [rows, setRows] = useState([]);
+    const [courses, SetCourses] = useState([]);
+    const [degress, SteDegress] = useState([]);
+    const [degreeColumn, SetDegreeColumn] = useState([]);
     const { data: session } = useSession();
 
     useEffect(() => {
-        (async () => {
-            const response = await axios
-                .get('http://127.0.0.1:5000/api/course')
-                .catch((error) => error.response);
-            response?.status === 200 ? setRows(response.data) : null;
-        })();
+        dispatch(fetchProducts());
     }, []);
 
-    useEffect(() => {
-    }, [rows]);
 
     const handleSubmit = async (values) => {
         const { code, name, semestercount } = values;
@@ -65,6 +66,7 @@ const Course = () => {
     return (
         <>
             <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
+                <h2 className='my-2 text-secondary text-2xl'>Create New Course</h2>
                 <div className="card-body">
                     <Formik
                         initialValues={initialValues}
@@ -112,6 +114,59 @@ const Course = () => {
                                         name="semestercount"
                                         control="select"
                                         options={semesterOptions}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-control mt-6">
+                                <button
+                                    className="btn btn-primary w-fit gap-2"
+                                    type="submit"
+                                >
+                                    Add New Course
+                                    <PlusIcon className="h-6 w-6" />
+                                </button>
+                            </div>
+                        </Form>
+                    </Formik>
+                </div>
+            </div>
+
+            <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
+                <h2 className='my-2 text-secondary text-2xl'>Add Course To Degree</h2>
+                <div className="card-body">
+                    <Formik
+                        initialValues={initialValues}
+                        validationSchema={validationSchema}
+                        onSubmit={handleSubmit}
+                    >
+                        <Form>
+                            <div className="grid gap-y-6 grid-rows-1 grid-cols-3">
+
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text">
+                                            Select Course
+                                        </span>
+                                    </label>
+                                    <FormikControl
+                                        label="Select Course"
+                                        name="semestercount"
+                                        control="select"
+                                        options={courses}
+                                    />
+                                </div>
+
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text">
+                                            Select Degree
+                                        </span>
+                                    </label>
+                                    <FormikControl
+                                        label="Select Degree"
+                                        name="semestercount"
+                                        control="select"
+                                        options={degreeColumn}
                                     />
                                 </div>
                             </div>

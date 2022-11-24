@@ -20,6 +20,7 @@ import Teacher from '../../components/Dashboard/Teacher';
 import Course from '../../components/Dashboard/Course';
 import Degree from '../../components/Dashboard/Degree';
 import Subject from '../../components/Dashboard/Subject';
+import Section from '../../components/Dashboard/Section';
 
 const Dashboard = () => {
     return (
@@ -36,6 +37,9 @@ const Dashboard = () => {
                 </TabItem>
                 <TabItem title="Subjects" icon={BookOpenIcon}>
                     <Subject />
+                </TabItem>
+                <TabItem title="Section" icon={BookOpenIcon}>
+                    <Section />
                 </TabItem>
                 <TabItem title="Students" icon={AcademicCapIcon}>
                     <Student />

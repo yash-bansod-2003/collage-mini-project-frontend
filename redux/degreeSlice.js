@@ -7,8 +7,8 @@ const STATUSES = Object.freeze({
     LOADING: 'loading'
 });
 
-const courseSlice = createSlice({
-    name: 'course',
+const degreeSlice = createSlice({
+    name: 'degree',
 
     initialState: {
         data: [],
@@ -16,7 +16,7 @@ const courseSlice = createSlice({
     },
 
     reducers: {
-        setCourses(state, action) {
+        setDegrees(state, action) {
             state.data = action.payload;
         },
         setStatus(state, action) {
@@ -26,7 +26,7 @@ const courseSlice = createSlice({
 });
 
 
-export const { setCourses, setStatus } = courseSlice.actions;
+export const { setDegrees, setStatus } = degreeSlice.actions;
 
 
 export { STATUSES };
@@ -36,8 +36,8 @@ export function fetchProducts() {
         dispatch(setStatus(STATUSES.LOADING));
 
         try {
-            const response = await axios.get('http://127.0.0.1:5000/api/course');
-            dispatch(setCourses(response.data));
+            const response = await axios.get('http://127.0.0.1:5000/api/degree');
+            dispatch(setDegrees(response.data));
             dispatch(setStatus(STATUSES.IDLE));
         } catch (error) {
             dispatch(setStatus(STATUSES.ERROR));

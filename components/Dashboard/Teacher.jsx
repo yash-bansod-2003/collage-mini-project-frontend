@@ -80,8 +80,6 @@ const Teacher = () => {
                 .catch((error) => error.response);
 
             response?.status === 200 ? setRows(response.data) : null;
-
-            console.log(response);
         })();
     }, []);
 

@@ -7,10 +7,6 @@ const Navbar = () => {
     const router = useRouter();
     const { data: session, status } = useSession();
 
-    useEffect(() => {
-        console.log(session);
-    }, [session]);
-
     return (
         <div className="navbar bg-base-100 container mx-auto">
             <div className="navbar-start">
@@ -54,9 +50,9 @@ const Navbar = () => {
                         ) : null}
 
                         {session &&
-                        status === 'authenticated' &&
-                        (session?.user.role === 'admin' ||
-                            session?.user.role === 'teacher') ? (
+                            status === 'authenticated' &&
+                            (session?.user.role === 'admin' ||
+                                session?.user.role === 'teacher') ? (
                             <li>
                                 <Link href="/dashboard" legacyBehavior>
                                     <a>Dashboard</a>
@@ -89,9 +85,9 @@ const Navbar = () => {
                     ) : null}
 
                     {session &&
-                    status === 'authenticated' &&
-                    (session?.user.role === 'admin' ||
-                        session?.user.role === 'teacher') ? (
+                        status === 'authenticated' &&
+                        (session?.user.role === 'admin' ||
+                            session?.user.role === 'teacher') ? (
                         <li>
                             <Link href="/dashboard" legacyBehavior>
                                 <a>Dashboard</a>

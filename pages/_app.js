@@ -5,13 +5,13 @@ import store from '../redux/store';
 import { Provider } from 'react-redux'
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     return (
-        <Provider store={store}>
-            <SessionProvider session={session}>
+        <SessionProvider session={session}>
+            <Provider store={store}>
                 <Navbar />
                 <Component {...pageProps} />
                 <Footer />
-            </SessionProvider>
-        </Provider>
+            </Provider>
+        </SessionProvider>
     );
 }
 
