@@ -21,6 +21,7 @@ import Course from '../../components/Dashboard/Course';
 import Degree from '../../components/Dashboard/Degree';
 import Subject from '../../components/Dashboard/Subject';
 import Section from '../../components/Dashboard/Section';
+import AssignSubject from '../../components/Dashboard/AssignSubject';
 
 const Dashboard = () => {
     return (
@@ -48,7 +49,7 @@ const Dashboard = () => {
                     <Teacher />
                 </TabItem>
                 <TabItem title="Assign Subject" icon={PencilSquareIcon}>
-                    Assign Subject
+                    <AssignSubject />
                 </TabItem>
             </Tabs.Group>
         </div>

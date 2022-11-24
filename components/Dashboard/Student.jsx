@@ -5,8 +5,10 @@ import FormikControl from '../Formik/FormikControl';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
-import { jwtService } from '../../services';
+import { jwtService, selectionMaker } from '../../services';
 import nanoId from 'nano-id';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchStudents } from '../../redux/studentSlice';
 
 const genderOptions = [
     {
@@ -64,29 +66,15 @@ const validationSchema = Yup.object({
 
 const Student = () => {
     const { data: session } = useSession();
-    const [rows, setRows] = useState([]);
+    const dispatch = useDispatch();
+    const rows = useSelector(state => state.student.data);
+    const courses = useSelector(state => state.course.data);
 
     useEffect(() => {
-        (async () => {
-            const token = jwtService.sign({
-                _id: session.user.id,
-                role: session.user.role,
-            });
+        dispatch(fetchStudents());
+    }, []);
 
-            const response = await axios
-                .post('http://127.0.0.1:5000/api/student', null, {
-                    headers: { 'authorization': `Bearer ${token}` },
-                })
-                .catch((error) => error.response);
-
-            response.status === 200 ? setRows(response.data) : null;
-        })();
-    }, [session.user.id, session.user.role]);
-
-    useEffect(() => {
-    }, [rows]);
-
-    const handleSubmit = async (values) => {
+    const handleSubmit = async (values, { resetForm }) => {
         const { name, email, contact, gender, branch } = values;
         const password = 'stud@123';
         const repeat_password = 'stud@123';
@@ -115,11 +103,14 @@ const Student = () => {
                 role: 'student',
                 repeat_password,
             }]) : null;
+
+        resetForm();
     };
 
     return (
         <>
             <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
+                <h2 className='my-2 text-secondary text-2xl'>Add New Student</h2>
                 <div className="card-body">
                     <Formik
                         initialValues={initialValues}
@@ -218,7 +209,7 @@ const Student = () => {
                                         label="Select Branch"
                                         name="branch"
                                         control="select"
-                                        options={branchOptions}
+                                        options={selectionMaker(courses)}
                                     />
                                 </div>
                             </div>

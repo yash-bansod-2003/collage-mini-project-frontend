@@ -18,3 +18,11 @@ export const selectionMaker = (array) => {
     });
     return newArr;
 }
+
+export const selectionUserMaker = (array) => {
+    const newArr = [];
+    array.forEach(element => {
+        newArr.push({ key: `${element.name.first} ${element.name.middle} ${element.name.last}`, value: `${element._id}` })
+    });
+    return newArr;
+}

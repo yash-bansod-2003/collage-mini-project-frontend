@@ -5,8 +5,10 @@ import FormikControl from '../Formik/FormikControl';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
-import { jwtService } from '../../services';
+import { jwtService, selectionMaker } from '../../services';
 import nanoId from 'nano-id';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTeachers, setTeachers } from '../../redux/teacherSlice';
 
 const genderOptions = [
     {
@@ -20,25 +22,6 @@ const genderOptions = [
     {
         value: 'other',
         key: 'Other',
-    },
-];
-
-const branchOptions = [
-    {
-        value: 'cse',
-        key: 'Computer Scienece And Engineering',
-    },
-    {
-        value: 'it',
-        key: 'Information And Technology',
-    },
-    {
-        value: 'civil',
-        key: 'Civil',
-    },
-    {
-        value: 'extc',
-        key: 'Electronics And Telicomunication',
     },
 ];
 
@@ -64,23 +47,12 @@ const validationSchema = Yup.object({
 
 const Teacher = () => {
     const { data: session } = useSession();
-    const [rows, setRows] = useState([]);
+    const dispatch = useDispatch();
+    const rows = useSelector(state => state.teacher.data);
+    const courses = useSelector(state => state.course.data);
 
     useEffect(() => {
-        (async () => {
-            const token = jwtService.sign({
-                _id: session.user.id,
-                role: session.user.role,
-            });
-
-            const response = await axios
-                .post('http://127.0.0.1:5000/api/teacher', null, {
-                    headers: { 'authorization': `Bearer ${token}` },
-                })
-                .catch((error) => error.response);
-
-            response?.status === 200 ? setRows(response.data) : null;
-        })();
+        dispatch(fetchTeachers());
     }, []);
 
     useEffect(() => {
@@ -105,7 +77,7 @@ const Teacher = () => {
             .catch((err) => err.response);
 
         response?.status === 200 ?
-            setRows([...rows, {
+            dispatch(setTeachers([...rows, {
                 name,
                 email,
                 contact,
@@ -114,7 +86,7 @@ const Teacher = () => {
                 password,
                 role: 'teacher',
                 repeat_password,
-            }]) : null;
+            }])) : null;
 
         resetForm();
     };
@@ -122,6 +94,7 @@ const Teacher = () => {
     return (
         <>
             <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
+                <h2 className='my-2 text-secondary text-2xl'>Add New Facultie</h2>
                 <div className="card-body">
                     <Formik
                         initialValues={initialValues}
@@ -220,7 +193,7 @@ const Teacher = () => {
                                         label="Select Branch"
                                         name="branch"
                                         control="select"
-                                        options={branchOptions}
+                                        options={selectionMaker(courses)}
                                     />
                                 </div>
                             </div>

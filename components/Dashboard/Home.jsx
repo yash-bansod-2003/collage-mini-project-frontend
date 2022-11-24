@@ -5,9 +5,13 @@ import {
     BookOpenIcon,
     UserIcon,
 } from '@heroicons/react/24/solid';
+import { useSelector, useDispatch } from 'react-redux';
 
 
 const Home = () => {
+    const students = useSelector(state => state.student.data.length);
+    const teachers = useSelector(state => state.teacher.data.length);
+    const courses = useSelector(state => state.course.data.length);
     return (
         <div className="w-full flex justify-between">
             <motion.div
@@ -21,7 +25,7 @@ const Home = () => {
                     <h2 className="card-title text-2xl">Students</h2>
                     <div className="card-actions justify-end">
                         <h2 className="text-primary text-6xl font-semibold">
-                            200+
+                            {students}
                         </h2>
                     </div>
                 </div>
@@ -38,7 +42,7 @@ const Home = () => {
                     <h2 className="card-title text-2xl">Faculities</h2>
                     <div className="card-actions justify-end">
                         <h2 className="text-primary text-6xl font-semibold">
-                            100+
+                            {teachers}
                         </h2>
                     </div>
                 </div>
@@ -55,7 +59,7 @@ const Home = () => {
                     <h2 className="card-title text-2xl">Courses</h2>
                     <div className="card-actions justify-end">
                         <h2 className="text-primary text-6xl font-semibold">
-                            10
+                            {courses}
                         </h2>
                     </div>
                 </div>

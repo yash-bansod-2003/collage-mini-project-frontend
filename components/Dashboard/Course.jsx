@@ -85,7 +85,7 @@ const Course = () => {
         });
 
         const response = await axios.put(`http://127.0.0.1:5000/api/degree/${degree}`, {
-            courses: [course]
+            course
         }, { headers: { authorization: `Bearer ${token}` } }).catch(error => error.response);
 
         response?.status === 200 ? toast('Course Added To Degree') : toast(response.data.message);
@@ -162,7 +162,7 @@ const Course = () => {
                 </div>
             </div>
 
-            <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
+            <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100 my-6">
                 <h2 className='my-2 text-secondary text-2xl'>Add Course To Degree</h2>
                 <div className="card-body">
                     <Formik
@@ -206,7 +206,7 @@ const Course = () => {
                                     className="btn btn-primary w-fit gap-2"
                                     type="submit"
                                 >
-                                    Add New Course
+                                    add course to degree
                                     <PlusIcon className="h-6 w-6" />
                                 </button>
                             </div>

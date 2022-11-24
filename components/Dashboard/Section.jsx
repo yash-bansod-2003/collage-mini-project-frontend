@@ -5,13 +5,14 @@ import FormikControl from '../Formik/FormikControl';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
-import { jwtService } from '../../services';
+import { jwtService, selectionMaker } from '../../services';
 import nanoId from 'nano-id';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSubjects } from '../../redux/subjectSlice';
 import { fetchSections, setSubjects } from '../../redux/sectionSlice';
+
 
 const initialValues = {
     code: nanoId(4),
@@ -23,9 +24,20 @@ const validationSchema = Yup.object({
     code: Yup.string().required().max(20),
 });
 
+const updateInitialValues = {
+    section: '',
+    course: '',
+}
+
+const updateValidationSchema = Yup.object({
+    section: Yup.string().required(),
+    course: Yup.string().required(),
+});
+
 const Section = () => {
     const dispatch = useDispatch();
     const rows = useSelector(state => state.section.data);
+    const courses = useSelector(state => state.course.data);
 
     const { data: session } = useSession();
 
@@ -53,12 +65,28 @@ const Section = () => {
         }
         resetForm();
     };
+    const handleUpdateSubmit = async (values, { resetForm }) => {
 
+        const { course, section } = values;
+
+        const token = jwtService.sign({
+            _id: session.user.id,
+            role: session.user.role,
+        });
+
+        const response = await axios.put(`http://127.0.0.1:5000/api/course/${course}`, {
+            section
+        }, { headers: { authorization: `Bearer ${token}` } }).catch(error => error.response);
+
+        response?.status === 200 ? toast('Section Added To Course') : toast(response.data.message);
+        resetForm();
+    }
     return (
         <>
             <ToastContainer position="top-left" theme='dark' />
 
             <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
+                <h2 className='my-2 text-secondary text-2xl'>Add New Section </h2>
                 <div className="card-body">
                     <Formik
                         initialValues={initialValues}
@@ -102,6 +130,61 @@ const Section = () => {
                                     type="submit"
                                 >
                                     Add New Section
+                                    <PlusIcon className="h-6 w-6" />
+                                </button>
+                            </div>
+                        </Form>
+                    </Formik>
+                </div>
+            </div>
+
+            <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
+                <h2 className='my-2 text-secondary text-2xl'>Add Section To Course</h2>
+                <div className="card-body">
+                    <Formik
+                        initialValues={updateInitialValues}
+                        validationSchema={updateValidationSchema}
+                        onSubmit={handleUpdateSubmit}
+                    >
+                        <Form>
+                            <div className="grid gap-y-6 grid-rows-1 grid-cols-3">
+
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text">
+                                            Select Section
+                                        </span>
+                                    </label>
+                                    <FormikControl
+                                        label="Select Section"
+                                        name="section"
+                                        control="select"
+                                        options={selectionMaker(rows)}
+                                    />
+                                </div>
+
+                                <div className="form-control">
+                                    <label className="label">
+                                        <span className="label-text">
+                                            Select Course
+                                        </span>
+                                    </label>
+                                    <FormikControl
+                                        label="Select Course"
+                                        name="course"
+                                        control="select"
+                                        options={selectionMaker(courses)}
+                                    />
+                                </div>
+
+
+                            </div>
+                            <div className="form-control mt-6">
+                                <button
+                                    className="btn btn-primary w-fit gap-2"
+                                    type="submit"
+                                >
+                                    add section to course
                                     <PlusIcon className="h-6 w-6" />
                                 </button>
                             </div>

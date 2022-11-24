@@ -48,6 +48,7 @@ const Degree = () => {
     return (
         <>
             <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
+                <h2 className='my-2 text-secondary text-2xl'>Add New Degree </h2>
                 <div className="card-body">
                     <Formik
                         initialValues={initialValues}
