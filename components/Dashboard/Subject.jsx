@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react';
 import { jwtService } from '../../services';
 import nanoId from 'nano-id';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchSubjects } from '../../redux/subjectSlice';
+import { fetchSubjects, setSubjects } from '../../redux/subjectSlice';
 
 const semesterOptions = [
     {
@@ -69,6 +69,7 @@ const validationSchema = Yup.object({
 });
 
 const Subject = () => {
+    const { data: session } = useSession();
     const dispatch = useDispatch();
     const rows = useSelector(state => state.subject.data);
 
@@ -89,7 +90,7 @@ const Subject = () => {
             code, name, semester, type, marks
         }, { headers: { authorization: `Bearer ${token}` } }).catch(error => error.response);
 
-        response.status === 200 ? setRows([...rows, { code, name, semester, type, marks }]) : null;
+        response.status === 200 ? dispatch(setSubjects([...rows, { code, name, semester, type, marks }])) : null;
         resetForm();
     };
 
@@ -103,7 +104,7 @@ const Subject = () => {
                         onSubmit={handleSubmit}
                     >
                         <Form>
-                            <div className="grid gap-y-6 grid-rows-1 grid-cols-3">
+                            <div className="grid gap-y-6 gap-x-6 grid-rows-1 grid-cols-3">
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">

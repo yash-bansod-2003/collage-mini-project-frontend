@@ -129,7 +129,7 @@ const Teacher = () => {
                         onSubmit={handleSubmit}
                     >
                         <Form>
-                            <div className="grid gap-y-6 grid-rows-3 grid-cols-3">
+                            <div className="grid gap-y-6 gap-x-6 grid-rows-3 grid-cols-3">
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">

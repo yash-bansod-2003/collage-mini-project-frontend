@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react';
 import { jwtService } from '../../services';
 import nanoId from 'nano-id';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchDegrees } from '../../redux/degreeSlice';
+import { fetchDegrees, setDegrees } from '../../redux/degreeSlice';
 
 const initialValues = {
     name: '',
@@ -41,7 +41,7 @@ const Degree = () => {
             code, name
         }, { headers: { authorization: `Bearer ${token}` } }).catch(error => error.response);
 
-        response.status === 200 ? setRows([...rows, { code, name }]) : null;
+        response.status === 200 ? dispatch(setDegrees([...rows, { code, name }])) : null;
         resetForm();
     };
 
@@ -55,7 +55,7 @@ const Degree = () => {
                         onSubmit={handleSubmit}
                     >
                         <Form>
-                            <div className="grid gap-y-6 grid-rows-1 grid-cols-3">
+                            <div className="grid gap-y-6 gap-x-6 grid-rows-1 grid-cols-3">
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">

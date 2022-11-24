@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react';
 import { jwtService } from '../../services';
 import nanoId from 'nano-id';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchCourses } from '../../redux/courseSlice';
+import { fetchCourses, setCourses } from '../../redux/courseSlice';
 
 const semesterOptions = [
     {
@@ -35,20 +35,16 @@ const validationSchema = Yup.object({
 
 const Course = () => {
 
+    const { data: session } = useSession();
     const dispatch = useDispatch();
     const rows = useSelector(state => state.course.data);
-    // const [rows, setRows] = useState([]);
-    const [courses, SetCourses] = useState([]);
-    const [degress, SteDegress] = useState([]);
-    const [degreeColumn, SetDegreeColumn] = useState([]);
-    const { data: session } = useSession();
 
     useEffect(() => {
         dispatch(fetchCourses());
     }, []);
 
 
-    const handleSubmit = async (values) => {
+    const handleSubmit = async (values, { resetForm }) => {
         const { code, name, semestercount } = values;
 
         const token = jwtService.sign({
@@ -60,7 +56,8 @@ const Course = () => {
             code, name, semestercount
         }, { headers: { authorization: `Bearer ${token}` } }).catch(error => error.response);
 
-        response.status === 200 ? setRows([...rows, { code, name, semestercount }]) : null;
+        response.status === 200 ? dispatch(setCourses([...rows, { code, name, semestercount }])) : null;
+        resetForm();
     };
 
     return (
@@ -74,7 +71,7 @@ const Course = () => {
                         onSubmit={handleSubmit}
                     >
                         <Form>
-                            <div className="grid gap-y-6 grid-rows-1 grid-cols-3">
+                            <div className="grid gap-y-6 gap-x-6 grid-rows-1 grid-cols-3">
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">
@@ -131,7 +128,7 @@ const Course = () => {
                 </div>
             </div>
 
-            <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
+            {/* <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
                 <h2 className='my-2 text-secondary text-2xl'>Add Course To Degree</h2>
                 <div className="card-body">
                     <Formik
@@ -182,7 +179,7 @@ const Course = () => {
                         </Form>
                     </Formik>
                 </div>
-            </div>
+            </div> */}
 
             <div className="overflow-x-auto card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100 my-6">
                 {

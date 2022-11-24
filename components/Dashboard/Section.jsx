@@ -11,7 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchSubjects } from '../../redux/subjectSlice';
-import { fetchSections } from '../../redux/sectionSlice';
+import { fetchSections, setSubjects } from '../../redux/sectionSlice';
 
 const initialValues = {
     code: nanoId(4),
@@ -46,7 +46,7 @@ const Section = () => {
         }, { headers: { authorization: `Bearer ${token}` } }).catch(error => error.response);
 
         if (response.status === 200) {
-            setRows([...rows, { code, name }]);
+            dispatch(setSubjects([...rows, { code, name }]));
             toast('New Section Created');
         } else {
             toast(response.data.message);
@@ -66,7 +66,7 @@ const Section = () => {
                         onSubmit={handleSubmit}
                     >
                         <Form>
-                            <div className="grid gap-y-6 grid-rows-1 grid-cols-3">
+                            <div className="grid gap-y-6 gap-x-6 grid-rows-1 grid-cols-3">
                                 <div className="form-control">
                                     <label className="label">
                                         <span className="label-text">
