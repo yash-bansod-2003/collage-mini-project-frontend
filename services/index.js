@@ -9,3 +9,12 @@ export class jwtService {
         return jsonwebtoken.sign(payload, secret, { expiresIn: expiry });
     }
 }
+
+
+export const selectionMaker = (array) => {
+    const newArr = [];
+    array.forEach(element => {
+        newArr.push({ key: `${element.name}`, value: `${element._id}` })
+    });
+    return newArr;
+}

@@ -81,7 +81,7 @@ const Student = () => {
 
             response.status === 200 ? setRows(response.data) : null;
         })();
-    }, []);
+    }, [session.user.id, session.user.role]);
 
     useEffect(() => {
     }, [rows]);

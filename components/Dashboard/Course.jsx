@@ -5,10 +5,13 @@ import FormikControl from '../Formik/FormikControl';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
-import { jwtService } from '../../services';
+import { jwtService, selectionMaker } from '../../services';
 import nanoId from 'nano-id';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchCourses, setCourses } from '../../redux/courseSlice';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const semesterOptions = [
     {
@@ -33,16 +36,28 @@ const validationSchema = Yup.object({
     semestercount: Yup.number().required(),
 });
 
+const updateInitialValues = {
+    course: '',
+    degree: ''
+}
+
+const updateValidationSchema = Yup.object({
+    course: Yup.string().required(),
+    degree: Yup.string().required(),
+});
+
 const Course = () => {
 
     const { data: session } = useSession();
     const dispatch = useDispatch();
     const rows = useSelector(state => state.course.data);
+    const degrees = useSelector(state => state.degree.data);
+    const [columns, setColumns] = useState([]);
+
 
     useEffect(() => {
         dispatch(fetchCourses());
     }, []);
-
 
     const handleSubmit = async (values, { resetForm }) => {
         const { code, name, semestercount } = values;
@@ -60,8 +75,27 @@ const Course = () => {
         resetForm();
     };
 
+    const handleUpdateSubmit = async (values, { resetForm }) => {
+
+        const { course, degree } = values;
+
+        const token = jwtService.sign({
+            _id: session.user.id,
+            role: session.user.role,
+        });
+
+        const response = await axios.put(`http://127.0.0.1:5000/api/degree/${degree}`, {
+            courses: [course]
+        }, { headers: { authorization: `Bearer ${token}` } }).catch(error => error.response);
+
+        response?.status === 200 ? toast('Course Added To Degree') : toast(response.data.message);
+        resetForm();
+    }
+
     return (
         <>
+            <ToastContainer position="top-left" theme='dark' />
+
             <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
                 <h2 className='my-2 text-secondary text-2xl'>Create New Course</h2>
                 <div className="card-body">
@@ -128,13 +162,13 @@ const Course = () => {
                 </div>
             </div>
 
-            {/* <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
+            <div className="card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100">
                 <h2 className='my-2 text-secondary text-2xl'>Add Course To Degree</h2>
                 <div className="card-body">
                     <Formik
-                        initialValues={initialValues}
-                        validationSchema={validationSchema}
-                        onSubmit={handleSubmit}
+                        initialValues={updateInitialValues}
+                        validationSchema={updateValidationSchema}
+                        onSubmit={handleUpdateSubmit}
                     >
                         <Form>
                             <div className="grid gap-y-6 grid-rows-1 grid-cols-3">
@@ -147,9 +181,9 @@ const Course = () => {
                                     </label>
                                     <FormikControl
                                         label="Select Course"
-                                        name="semestercount"
+                                        name="course"
                                         control="select"
-                                        options={courses}
+                                        options={selectionMaker(rows)}
                                     />
                                 </div>
 
@@ -161,9 +195,9 @@ const Course = () => {
                                     </label>
                                     <FormikControl
                                         label="Select Degree"
-                                        name="semestercount"
+                                        name="degree"
                                         control="select"
-                                        options={degreeColumn}
+                                        options={selectionMaker(degrees)}
                                     />
                                 </div>
                             </div>
@@ -179,7 +213,7 @@ const Course = () => {
                         </Form>
                     </Formik>
                 </div>
-            </div> */}
+            </div>
 
             <div className="overflow-x-auto card flex-shrink-0 w-full max-w-full shadow-2xl bg-base-100 my-6">
                 {
