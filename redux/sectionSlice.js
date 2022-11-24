@@ -7,8 +7,8 @@ const STATUSES = Object.freeze({
     LOADING: 'loading'
 });
 
-const courseSlice = createSlice({
-    name: 'course',
+const slice = createSlice({
+    name: 'section',
 
     initialState: {
         data: [],
@@ -16,7 +16,7 @@ const courseSlice = createSlice({
     },
 
     reducers: {
-        setCourses(state, action) {
+        setSubjects(state, action) {
             state.data = action.payload;
         },
         setStatus(state, action) {
@@ -26,23 +26,23 @@ const courseSlice = createSlice({
 });
 
 
-export const { setCourses, setStatus } = courseSlice.actions;
+export const { setSubjects, setStatus } = slice.actions;
 
+export default slice.reducer;
 
 export { STATUSES };
 
-export function fetchCourses() {
-    return async function fetchCoursesThunk(dispatch, getState) {
+export function fetchSections() {
+    return async function fetchSectionsThunk(dispatch, getState) {
         dispatch(setStatus(STATUSES.LOADING));
 
         try {
-            const response = await axios.get('http://127.0.0.1:5000/api/course');
-            dispatch(setCourses(response.data));
+            const response = await axios.get('http://127.0.0.1:5000/api/section');
+            dispatch(setSubjects(response.data));
             dispatch(setStatus(STATUSES.IDLE));
         } catch (error) {
+            console.log(error);
             dispatch(setStatus(STATUSES.ERROR));
         }
     }
 }
-
-export default courseSlice.reducer;

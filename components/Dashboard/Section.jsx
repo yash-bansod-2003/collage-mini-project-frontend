@@ -9,6 +9,9 @@ import { jwtService } from '../../services';
 import nanoId from 'nano-id';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSubjects } from '../../redux/subjectSlice';
+import { fetchSections } from '../../redux/sectionSlice';
 
 const initialValues = {
     code: nanoId(4),
@@ -21,20 +24,14 @@ const validationSchema = Yup.object({
 });
 
 const Section = () => {
-    const [rows, setRows] = useState([]);
+    const dispatch = useDispatch();
+    const rows = useSelector(state => state.section.data);
+
     const { data: session } = useSession();
 
     useEffect(() => {
-        (async () => {
-            const response = await axios
-                .get('http://127.0.0.1:5000/api/section')
-                .catch((error) => error.response);
-            response?.status === 200 ? setRows(response.data) : null;
-        })();
+        dispatch(fetchSections());
     }, []);
-
-    useEffect(() => {
-    }, [rows]);
 
     const handleSubmit = async (values, { resetForm }) => {
         const { code, name, semestercount } = values;

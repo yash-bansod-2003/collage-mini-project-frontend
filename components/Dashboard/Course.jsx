@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react';
 import { jwtService } from '../../services';
 import nanoId from 'nano-id';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchProducts } from '../../redux/courseSlice';
+import { fetchCourses } from '../../redux/courseSlice';
 
 const semesterOptions = [
     {
@@ -44,7 +44,7 @@ const Course = () => {
     const { data: session } = useSession();
 
     useEffect(() => {
-        dispatch(fetchProducts());
+        dispatch(fetchCourses());
     }, []);
 
 

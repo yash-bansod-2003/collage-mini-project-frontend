@@ -31,8 +31,8 @@ export const { setDegrees, setStatus } = degreeSlice.actions;
 
 export { STATUSES };
 
-export function fetchProducts() {
-    return async function fetchProductsThunk(dispatch, getState) {
+export function fetchDegrees() {
+    return async function fetchDegreesThunk(dispatch, getState) {
         dispatch(setStatus(STATUSES.LOADING));
 
         try {
@@ -45,4 +45,4 @@ export function fetchProducts() {
     }
 }
 
-export default courseSlice.reducer;
+export default degreeSlice.reducer;

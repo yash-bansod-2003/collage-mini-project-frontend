@@ -7,6 +7,8 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { jwtService } from '../../services';
 import nanoId from 'nano-id';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchDegrees } from '../../redux/degreeSlice';
 
 const initialValues = {
     name: '',
@@ -19,20 +21,13 @@ const validationSchema = Yup.object({
 });
 
 const Degree = () => {
-    const [rows, setRows] = useState([]);
+    const dispatch = useDispatch();
+    const rows = useSelector(state => state.degree.data);
     const { data: session } = useSession();
 
     useEffect(() => {
-        (async () => {
-            const response = await axios
-                .get('http://127.0.0.1:5000/api/degree')
-                .catch((error) => error.response);
-            response?.status === 200 ? setRows(response.data) : null;
-        })();
+        dispatch(fetchDegrees());
     }, []);
-
-    useEffect(() => {
-    }, [rows]);
 
     const handleSubmit = async (values, { resetForm }) => {
         const { code, name, semestercount } = values;

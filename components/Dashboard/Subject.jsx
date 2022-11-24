@@ -7,6 +7,8 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { jwtService } from '../../services';
 import nanoId from 'nano-id';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchSubjects } from '../../redux/subjectSlice';
 
 const semesterOptions = [
     {
@@ -67,20 +69,13 @@ const validationSchema = Yup.object({
 });
 
 const Subject = () => {
-    const [rows, setRows] = useState([]);
-    const { data: session } = useSession();
+    const dispatch = useDispatch();
+    const rows = useSelector(state => state.subject.data);
 
     useEffect(() => {
-        (async () => {
-            const response = await axios
-                .get('http://127.0.0.1:5000/api/subject')
-                .catch((error) => error.response);
-            response?.status === 200 ? setRows(response.data) : null;
-        })();
+        dispatch(fetchSubjects());
     }, []);
 
-    useEffect(() => {
-    }, [rows]);
 
     const handleSubmit = async (values, { resetForm }) => {
         const { code, name, semester, type, marks } = values;
